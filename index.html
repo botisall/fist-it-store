@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Fist It Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ====== FULL CSS ====== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --pink-primary: #ff6b8a; --pink-gradient: linear-gradient(135deg, #ff6b8a, #ff8fa3); --blue-primary: #4a9eff; --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.15); --radius-xl: 24px; --radius-md: 12px; --text-dark: #1a1a2e; --bg-primary: #f8f9fe; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-dark); min-height: 100vh; }
+        .navbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.2); padding: 12px 0; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; }
+        .brand-text span { background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-primary { padding: 10px 24px; border: none; border-radius: 50px; background: var(--pink-gradient); color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,107,138,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,138,0.4); }
+
+        .hero { padding: 60px 24px 80px; text-align: center; }
+        .hero-title { font-size: 48px; font-weight: 900; line-height: 1.1; color: var(--text-dark); margin-bottom: 16px; }
+        @media (max-width: 768px) { .hero-title { font-size: 32px; } }
+        .gradient-text { background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-desc { font-size: 18px; color: #6b6b8a; max-width: 500px; margin: 0 auto 32px; }
+        .hero-stats { display: flex; justify-content: center; align-items: center; gap: 32px; padding: 24px 40px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.3); max-width: 500px; margin: 0 auto; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-number { font-size: 28px; font-weight: 800; background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 13px; color: #6b6b8a; font-weight: 500; margin-top: 4px; }
+        .stat-divider { width: 1px; height: 40px; background: rgba(0,0,0,0.06); }
+
+        .products-section { max-width: 1200px; margin: 0 auto; padding: 40px 24px 60px; }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-title { font-size: 36px; font-weight: 800; }
+        .section-sub { color: #6b6b8a; font-size: 16px; margin-top: 8px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .product-card { background: white; border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 32px 64px rgba(0,0,0,0.08); }
+        .product-card .product-image { width: 100%; height: 160px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 12px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #b0b0b0; font-size: 14px; }
+        .product-card .product-image img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card .product-badge { display: inline-block; padding: 2px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; background: rgba(74,158,255,0.1); color: var(--blue-primary); margin-bottom: 8px; }
+        .product-card .product-name { font-size: 18px; font-weight: 700; }
+        .product-card .product-price { font-size: 28px; font-weight: 800; background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 8px 0; }
+        .product-card .product-stock { font-size: 14px; color: #6b6b8a; margin-bottom: 16px; }
+        .product-card .btn-buy { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); background: var(--pink-gradient); color: white; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s ease; }
+        .product-card .btn-buy:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 8px 25px rgba(255,107,138,0.3); }
+        .product-card .btn-buy:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { padding: 14px 24px; border-radius: var(--radius-md); color: white; font-weight: 500; font-size: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); animation: slideUp 0.4s ease backwards; min-width: 200px; }
+        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-box { background: white; border-radius: var(--radius-xl); max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 32px 64px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .modal-header h3 { font-size: 20px; font-weight: 700; }
+        .modal-close { width: 36px; height: 36px; border: none; border-radius: 50%; background: rgba(0,0,0,0.05); font-size: 20px; cursor: pointer; transition: all 0.3s ease; color: var(--text-dark); }
+        .modal-close:hover { background: rgba(0,0,0,0.1); transform: rotate(90deg); }
+        .modal-body { padding: 24px; }
+        .product-preview { background: rgba(255,107,138,0.06); border-radius: var(--radius-md); padding: 16px; text-align: center; margin-bottom: 20px; }
+        .preview-name { font-weight: 700; font-size: 16px; display: block; }
+        .preview-price { font-size: 24px; font-weight: 800; background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .input-group label { font-weight: 600; font-size: 14px; color: var(--text-dark); }
+        .input-group label .required { color: #ef4444; }
+        .input-group input { padding: 12px 16px; border: 2px solid rgba(0,0,0,0.08); border-radius: var(--radius-md); font-size: 15px; font-family: 'Inter', sans-serif; transition: all 0.3s ease; background: white; width: 100%; }
+        .input-group input:focus { outline: none; border-color: var(--pink-primary); box-shadow: 0 0 0 4px rgba(255,107,138,0.1); }
+        .input-group small { color: #6b6b8a; font-size: 11px; margin-top: 2px; }
+
+        .upload-area { position: relative; border: 2px dashed rgba(255,107,138,0.25); border-radius: var(--radius-md); padding: 20px; text-align: center; transition: all 0.3s ease; background: rgba(255,107,138,0.03); min-height: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .upload-area:hover { border-color: var(--pink-primary); background: rgba(255,107,138,0.08); }
+        .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; }
+        .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none; }
+        .upload-icon { font-size: 32px; }
+        .upload-text { font-weight: 600; font-size: 14px; color: var(--text-dark); }
+        .upload-hint { font-size: 12px; color: #6b6b8a; }
+        .upload-preview { position: relative; width: 100%; margin-top: 8px; }
+        .upload-preview img { max-height: 150px; object-fit: contain; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.06); }
+        .btn-remove-image { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: none; border-radius: 50%; background: rgba(239,68,68,0.9); color: white; font-size: 16px; cursor: pointer; z-index: 3; transition: all 0.3s ease; }
+        .btn-remove-image:hover { background: #ef4444; transform: scale(1.1); }
+
+        .btn-order-submit { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); background: var(--pink-gradient); color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s ease; margin-top: 8px; }
+        .btn-order-submit:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(255,107,138,0.3); }
+        .btn-order-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .footer { text-align: center; padding: 40px 24px; color: #6b6b8a; font-size: 14px; border-top: 1px solid rgba(0,0,0,0.04); }
+        .footer-small { font-size: 12px; margin-top: 4px; }
+        .footer a { color: var(--pink-primary); text-decoration: none; }
+
+        .loading { text-align: center; padding: 40px; color: #6b6b8a; }
+        .loading .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f0f0f0; border-top: 4px solid var(--pink-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .hero-stats { flex-direction: column; gap: 12px; padding: 20px; }
+            .stat-divider { width: 60px; height: 1px; }
+            .product-grid { grid-template-columns: 1fr; }
+            .nav-container { flex-wrap: wrap; gap: 12px; justify-content: center; }
+            .modal-box { max-width: 100%; margin: 0 8px; }
+            .hero-title { font-size: 28px; }
+            .section-title { font-size: 28px; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--pink-gradient); border-radius: 50px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-icon">⚡</span>
+                <span class="brand-text">FIST<span>IT</span></span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-primary" onclick="UI.scrollToProducts()">🛒 Beli Sekarang</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Fist It <br /><span class="gradient-text">Roblox Store</span></h1>
+            <p class="hero-desc">Beli item Fist It dengan mudah. Upload bukti transfer, admin verifikasi di dashboard.</p>
+            <div class="hero-stats">
+                <div class="stat-item"><span class="stat-number" id="totalOrders">0</span><span class="stat-label">Pesanan</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number" id="totalProducts">0</span><span class="stat-label">Produk</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number">📸</span><span class="stat-label">Upload Bukti</span></div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast-container"></div>
+
+    <section class="products-section" id="productsSection">
+        <div class="section-header">
+            <h2 class="section-title">🛍️ <span class="gradient-text">Produk</span> Tersedia</h2>
+            <p class="section-sub">Pilih produk favoritmu, langsung proses!</p>
+        </div>
+        <div id="productList" class="product-grid">
+            <div class="loading"><div class="spinner"></div><p>Memuat data...</p></div>
+        </div>
+    </section>
+
+    <!-- ====== MODAL ORDER ====== -->
+    <div id="orderModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>🛒 Form Pemesanan</h3>
+                <button class="modal-close" onclick="UI.closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="product-preview">
+                    <span class="preview-name" id="modalProductName">Product</span>
+                    <span class="preview-price" id="modalProductPrice">Rp 0</span>
+                </div>
+
+                <form id="orderForm">
+                    <div class="input-group">
+                        <label>Nama Lengkap <span class="required">*</span></label>
+                        <input type="text" id="orderName" placeholder="Contoh: Ahmad Fauzi" required />
+                    </div>
+                    <div class="input-group">
+                        <label>Nomor WhatsApp <span class="required">*</span></label>
+                        <input type="tel" id="orderPhone" placeholder="6281234567890" required />
+                        <small>Gunakan format 628xxxxxxxxxx (tanpa +)</small>
+                    </div>
+                    <div class="input-group">
+                        <label>User ID Game <span class="required">*</span></label>
+                        <input type="text" id="orderUserId" placeholder="Contoh: 123456789" required />
+                    </div>
+                    <div class="input-group">
+                        <label>Total Pembayaran</label>
+                        <input type="number" id="orderTotal" placeholder="Masukkan nominal" />
+                    </div>
+
+                    <div class="input-group">
+                        <label>📸 Upload Bukti Transfer <span class="required">*</span></label>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="orderProofFile" accept="image/*" />
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <span class="upload-icon">📤</span>
+                                <span class="upload-text">Klik untuk upload foto bukti</span>
+                                <span class="upload-hint">JPG, PNG, WEBP • Max 2MB</span>
+                            </div>
+                            <div class="upload-preview" id="uploadPreview" style="display:none;">
+                                <img id="previewImage" src="" alt="Bukti Transfer" />
+                                <button type="button" class="btn-remove-image" onclick="UI.removeImage()">✕</button>
+                            </div>
+                        </div>
+                        <small style="color:#6b6b8a;font-size:11px;">Foto akan tersimpan di dashboard admin</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Keterangan Tambahan</label>
+                        <input type="text" id="orderNote" placeholder="Contoh: BCA a/n FistIt, 15:30 WIB" />
+                    </div>
+
+                    <button type="submit" class="btn-order-submit" id="submitOrderBtn">Kirim Pesanan 📤</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>⚡ <strong>FIST IT STORE</strong> — Powered by Google Apps Script</p>
+        <p class="footer-small">Admin: <a href="admin.html">🔑 Login Admin</a></p>
+    </footer>
+
+    <script>
+        // ============================================
+        // 1. KONFIGURASI
+        // ============================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxeMVgLeClgVhI3G4FNWNvGCDPUoB9djN9Av4Mk--8ACqNxuiShfopupMmUmki7N5i2/exec';
+        const ADMIN_PHONE = '6289630267618';
+
+        // ============================================
+        // 2. TOAST
+        // ============================================
+        const Toast = {
+            show: (msg, type = 'info', duration = 4000) => {
+                const c = document.getElementById('toast-container');
+                if (!c) return;
+                const t = document.createElement('div');
+                t.className = `toast ${type}`;
+                t.textContent = msg;
+                c.appendChild(t);
+                setTimeout(() => {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(20px)';
+                    setTimeout(() => t.remove(), 300);
+                }, duration);
+            },
+            success: (m) => Toast.show(m, 'success'),
+            error: (m) => Toast.show(m, 'error'),
+            info: (m) => Toast.show(m, 'info')
+        };
+
+        // ============================================
+        // 3. API — DENGAN ERROR HANDLING
+        // ============================================
+        const API = {
+            getProducts: async () => {
+                try {
+                    const url = `${API_URL}?action=products`;
+                    console.log('📡 Fetching products from:', url);
+                    
+                    const res = await fetch(url);
+                    console.log('📡 Response status:', res.status);
+                    
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                    }
+                    
+                    const data = await res.json();
+                    console.log('📡 Response data:', data);
+                    
+                    if (!data.success) {
+                        throw new Error(data.error || 'Gagal mengambil data');
+                    }
+                    
+                    return data.data || [];
+                } catch (error) {
+                    console.error('❌ API getProducts error:', error);
+                    throw error;
+                }
+            },
+
+            addOrder: async (orderData) => {
+                try {
+                    console.log('📤 Sending order:', orderData);
+                    
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addOrder', ...orderData })
+                    });
+                    
+                    console.log('📤 Response status:', res.status);
+                    
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                    }
+                    
+                    const data = await res.json();
+                    console.log('📤 Response data:', data);
+                    
+                    if (!data.success) {
+                        throw new Error(data.error || 'Gagal menyimpan order');
+                    }
+                    
+                    return data.data;
+                } catch (error) {
+                    console.error('❌ API addOrder error:', error);
+                    throw error;
+                }
+            }
+        };
+
+        // ============================================
+        // 4. WHATSAPP
+        // ============================================
+        const WhatsApp = {
+            sendOrderMessage: (product, name, phone, userId, total, note) => {
+                const msg = `
+🛒 ORDER FIST IT STORE
+
+🛍️ Produk: ${product.name}
+💰 Harga: Rp ${product.price.toLocaleString()}
+💳 Total Bayar: Rp ${(total || product.price).toLocaleString()}
+
+📝 Data Pembeli:
+👤 Nama: ${name}
+📱 No HP: ${phone}
+🎮 User ID: ${userId}
+📝 Keterangan: ${note || '-'}
+
+📸 Bukti transfer sudah diupload di dashboard admin.
+---
+Mohon konfirmasi pembayaran. Terima kasih! ⚡
+                `.trim();
+                return `https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(msg)}`;
+            }
+        };
+
+        // ============================================
+        // 5. UI CONTROLLER
+        // ============================================
+        const UI = {
+            _products: [],
+            _selectedProduct: null,
+            _pendingImage: null,
+
+            loadData: async () => {
+                try {
+                    Toast.info('📥 Memuat data...');
+                    const products = await API.getProducts();
+                    UI._products = products;
+                    return true;
+                } catch (error) {
+                    Toast.error('Gagal memuat data: ' + error.message);
+                    return false;
+                }
+            },
+
+            renderProducts: () => {
+                const container = document.getElementById('productList');
+                if (!container) return;
+                const products = UI._products || [];
+
+                if (products.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;color:#6b6b8a;padding:40px;">Belum ada produk tersedia.</p>';
+                    return;
+                }
+
+                container.innerHTML = products.map((p) => {
+                    let imgHtml = `<div class="product-image">📷 No Image</div>`;
+                    if (p.images && p.images.length > 0 && p.images !== '') {
+                        imgHtml = `<div class="product-image"><img src="${p.images}" alt="${p.name}" /></div>`;
+                    }
+
+                    return `
+                        <div class="product-card">
+                            ${imgHtml}
+                            <div class="product-badge">${parseInt(p.stock) > 0 ? '✅ Tersedia' : '⛔ Habis'}</div>
+                            <div class="product-name">${p.name}</div>
+                            <div class="product-price">Rp ${parseInt(p.price).toLocaleString()}</div>
+                            <div class="product-stock">Stok: ${p.stock || 0}</div>
+                            ${parseInt(p.stock) > 0
+                                ? `<button class="btn-buy" onclick="UI.showOrderModal(${p.id})">🛒 Beli</button>`
+                                : `<button class="btn-buy" disabled>⛔ Habis</button>`
+                            }
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            showOrderModal: (productId) => {
+                const product = UI._products.find(p => parseInt(p.id) === productId);
+                if (!product) {
+                    Toast.error('Produk tidak ditemukan');
+                    return;
+                }
+
+                UI._selectedProduct = product;
+                UI._pendingImage = null;
+
+                document.getElementById('orderForm').reset();
+                document.getElementById('uploadPreview').style.display = 'none';
+                document.getElementById('uploadPlaceholder').style.display = 'flex';
+                document.getElementById('orderTotal').value = product.price;
+                document.getElementById('submitOrderBtn').disabled = false;
+                document.getElementById('submitOrderBtn').textContent = 'Kirim Pesanan 📤';
+
+                document.getElementById('modalProductName').textContent = product.name;
+                document.getElementById('modalProductPrice').textContent = `Rp ${parseInt(product.price).toLocaleString()}`;
+
+                document.getElementById('orderModal').style.display = 'flex';
+            },
+
+            closeModal: () => {
+                document.getElementById('orderModal').style.display = 'none';
+                UI._selectedProduct = null;
+                UI._pendingImage = null;
+            },
+
+            handleImageUpload: (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (file.size > 2 * 1024 * 1024) {
+                    Toast.error('Foto maksimal 2MB!');
+                    e.target.value = '';
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    Toast.error('Hanya file gambar yang diizinkan!');
+                    e.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('uploadPreview').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                    document.getElementById('previewImage').src = ev.target.result;
+                    UI._pendingImage = ev.target.result;
+                    Toast.success('📸 Foto bukti siap!');
+                };
+                reader.readAsDataURL(file);
+            },
+
+            removeImage: () => {
+                document.getElementById('uploadPreview').style.display = 'none';
+                document.getElementById('uploadPlaceholder').style.display = 'flex';
+                document.getElementById('orderProofFile').value = '';
+                UI._pendingImage = null;
+                Toast.info('Foto dihapus');
+            },
+
+            handleOrderSubmit: async (e) => {
+                e.preventDefault();
+
+                const product = UI._selectedProduct;
+                if (!product) {
+                    Toast.error('Produk tidak valid');
+                    return;
+                }
+
+                const name = document.getElementById('orderName').value.trim();
+                const phone = document.getElementById('orderPhone').value.trim();
+                const userId = document.getElementById('orderUserId').value.trim();
+                const total = parseInt(document.getElementById('orderTotal').value);
+                const note = document.getElementById('orderNote').value.trim();
+
+                // Validasi
+                if (!name) { Toast.error('Masukkan nama lengkap!'); return; }
+                if (!phone) { Toast.error('Masukkan nomor WhatsApp!'); return; }
+                if (!userId) { Toast.error('Masukkan User ID Game!'); return; }
+                if (!UI._pendingImage) { Toast.error('Upload bukti transfer dulu!'); return; }
+
+                const submitBtn = document.getElementById('submitOrderBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ Menyimpan...';
+
+                try {
+                    // 1. Simpan gambar di localStorage
+                    const imageId = 'img_' + Date.now().toString(36);
+                    localStorage.setItem('fistit_image_' + imageId, UI._pendingImage);
+
+                    // 2. Kirim order ke Google Apps Script
+                    const orderData = {
+                        productId: product.id,
+                        productName: product.name,
+                        price: parseInt(product.price),
+                        userName: name,
+                        userPhone: phone,
+                        userId: userId,
+                        totalPayment: total || parseInt(product.price),
+                        note: note || '',
+                        imageId: imageId
+                    };
+
+                    const result = await API.addOrder(orderData);
+                    
+                    Toast.success(`✅ Pesanan berhasil! Order ID: ${result.id}`);
+
+                    // 3. Update stok (local)
+                    const productIndex = UI._products.findIndex(p => parseInt(p.id) === product.id);
+                    if (productIndex !== -1) {
+                        UI._products[productIndex].stock = parseInt(UI._products[productIndex].stock) - 1;
+                        UI.renderProducts();
+                        UI.updateStats();
+                    }
+
+                    // 4. Kirim WA ke admin (TANPA FOTO)
+                    const waLink = WhatsApp.sendOrderMessage(product, name, phone, userId, total || product.price, note);
+                    window.open(waLink, '_blank');
+
+                    // 5. Tutup modal
+                    setTimeout(() => {
+                        UI.closeModal();
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Kirim Pesanan 📤';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('❌ Submit order error:', error);
+                    Toast.error('Gagal: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Kirim Pesanan 📤';
+                }
+            },
+
+            updateStats: () => {
+                const products = UI._products || [];
+                const totalProducts = document.getElementById('totalProducts');
+                if (totalProducts) totalProducts.textContent = products.length;
+                // Total orders diambil dari API nanti (admin)
+            },
+
+            scrollToProducts: () => {
+                document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        // ============================================
+        // 6. INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loaded = await UI.loadData();
+            if (loaded) {
+                UI.renderProducts();
+                UI.updateStats();
+                Toast.success('✅ Data dimuat!');
+            }
+
+            // Event listeners
+            document.getElementById('orderForm').addEventListener('submit', UI.handleOrderSubmit);
+            document.getElementById('orderProofFile').addEventListener('change', UI.handleImageUpload);
+
+            document.getElementById('orderModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) UI.closeModal();
+            });
+
+            console.log('🔥 FIST IT STORE — Index ready');
+            console.log('📡 API_URL:', API_URL);
+            console.log('📱 Admin WA:', ADMIN_PHONE);
+        });
+    </script>
+
+</body>
+</html>
