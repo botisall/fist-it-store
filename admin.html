@@ -6,87 +6,587 @@
     <title>Admin — Fist It Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ====== FULL CSS ====== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --pink-primary: #ff6b8a; --pink-gradient: linear-gradient(135deg, #ff6b8a, #ff8fa3); --blue-primary: #4a9eff; --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.15); --radius-xl: 24px; --radius-md: 12px; --text-dark: #1a1a2e; --bg-primary: #f8f9fe; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-dark); min-height: 100vh; }
-        .admin-page { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
-        .admin-page .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid rgba(255,107,138,0.1); flex-wrap: wrap; gap: 12px; }
-        .admin-page .header h1 { font-size: 28px; }
-        .admin-page .header .back-link { color: #6b6b8a; text-decoration: none; padding: 8px 20px; border: 1px solid rgba(0,0,0,0.06); border-radius: 50px; transition: all 0.3s ease; font-size: 14px; }
-        .admin-page .header .back-link:hover { border-color: var(--pink-primary); color: var(--pink-primary); }
-        .admin-login-box { max-width: 400px; margin: 80px auto; text-align: center; padding: 0 16px; }
-        .login-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--pink-gradient); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; box-shadow: 0 8px 30px rgba(255,107,138,0.3); }
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
-        .dash-card { background: white; border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.04); }
-        .dash-card h3 { font-size: 16px; color: #6b6b8a; margin-bottom: 16px; }
-        .dash-stats { display: flex; gap: 24px; flex-wrap: wrap; }
-        .dash-stat { flex: 1; min-width: 80px; }
-        .dash-stat .number { font-size: 32px; font-weight: 800; background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .dash-stat .label { font-size: 13px; color: #6b6b8a; margin-top: 4px; }
-        .orders-table { background: white; border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.04); overflow-x: auto; }
-        .orders-table table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
-        .orders-table th { text-align: left; padding: 12px 8px; color: #6b6b8a; font-weight: 600; border-bottom: 2px solid rgba(0,0,0,0.04); }
-        .orders-table td { padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle; }
-        .orders-table .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .orders-table .status-badge.pending { background: #fef3c7; color: #92400e; }
-        .orders-table .status-badge.confirmed { background: #d1fae5; color: #065f46; }
-        .orders-table .btn-confirm { padding: 4px 14px; border: none; border-radius: 50px; background: linear-gradient(135deg, #4a9eff, #7bb8ff); color: white; font-weight: 600; font-size: 11px; cursor: pointer; transition: all 0.3s ease; }
-        .orders-table .btn-confirm:hover { transform: scale(1.05); }
-        .orders-table .btn-wa { padding: 4px 14px; border: none; border-radius: 50px; background: #25D366; color: white; font-weight: 600; font-size: 11px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
-        .orders-table .btn-wa:hover { transform: scale(1.05); }
-        .btn-logout { padding: 10px 24px; border: 2px solid rgba(0,0,0,0.06); border-radius: 50px; background: transparent; font-weight: 600; cursor: pointer; color: #6b6b8a; transition: all 0.3s ease; }
-        .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
-        .btn-add-product { padding: 10px 24px; border: none; border-radius: 50px; background: var(--pink-gradient); color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-add-product:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(255,107,138,0.3); }
-        .admin-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-        .admin-actions button { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; }
-        .admin-actions .btn-edit { background: rgba(74,158,255,0.08); color: var(--blue-primary); }
-        .admin-actions .btn-edit:hover { background: rgba(74,158,255,0.15); }
-        .admin-actions .btn-delete { background: rgba(239,68,68,0.08); color: #ef4444; }
-        .admin-actions .btn-delete:hover { background: rgba(239,68,68,0.15); }
-        .btn-refresh { padding: 6px 14px; border: 1px solid rgba(0,0,0,0.06); border-radius: 50px; background: transparent; font-size: 12px; cursor: pointer; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-        .input-group label { font-weight: 600; font-size: 14px; color: var(--text-dark); }
-        .input-group label .required { color: #ef4444; }
-        .input-group input, .input-group select { padding: 12px 16px; border: 2px solid rgba(0,0,0,0.06); border-radius: var(--radius-md); font-size: 15px; font-family: 'Inter', sans-serif; transition: all 0.3s ease; background: white; width: 100%; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--pink-primary); box-shadow: 0 0 0 4px rgba(255,107,138,0.1); }
-        .btn-login, .btn-order-submit { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); background: var(--pink-gradient); color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s ease; margin-top: 8px; }
-        .btn-login:hover, .btn-order-submit:hover { transform: scale(1.02); box-shadow: 0 8px 30px rgba(255,107,138,0.3); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-box { background: white; border-radius: var(--radius-xl); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 32px 64px rgba(0,0,0,0.2); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(0,0,0,0.04); }
-        .modal-header h3 { font-size: 20px; }
-        .modal-close { width: 36px; height: 36px; border: none; border-radius: 50%; background: rgba(0,0,0,0.04); font-size: 18px; cursor: pointer; transition: all 0.3s ease; }
-        .modal-close:hover { background: rgba(0,0,0,0.08); transform: rotate(90deg); }
-        .modal-body { padding: 24px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-
-        .toast { padding: 14px 24px; border-radius: var(--radius-md); color: white; font-weight: 500; font-size: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); animation: slideUp 0.4s ease backwards; min-width: 200px; }
-        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
-        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .toast.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-        .loading { text-align: center; padding: 40px; color: #6b6b8a; }
-        .loading .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f0f0f0; border-top: 4px solid var(--pink-primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .gradient-text { background: var(--pink-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        .method-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
-        .method-item .label { color: #6b6b8a; }
-        .method-item .value { font-weight: 600; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --pink-primary: #ff6b8a;
+            --pink-gradient: linear-gradient(135deg, #ff6b8a, #ff8fa3);
+            --blue-primary: #4a9eff;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --radius-xl: 24px;
+            --radius-md: 12px;
+            --text-dark: #1a1a2e;
+            --bg-primary: #f8f9fe;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+        .admin-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        .admin-page .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(255, 107, 138, 0.1);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .admin-page .header h1 {
+            font-size: 28px;
+        }
+        .admin-page .header .back-link {
+            color: #6b6b8a;
+            text-decoration: none;
+            padding: 8px 20px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .admin-page .header .back-link:hover {
+            border-color: var(--pink-primary);
+            color: var(--pink-primary);
+        }
+        .admin-login-box {
+            max-width: 400px;
+            margin: 80px auto;
+            text-align: center;
+            padding: 0 16px;
+        }
+        .login-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--pink-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 30px rgba(255, 107, 138, 0.3);
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .dash-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .dash-card h3 {
+            font-size: 16px;
+            color: #6b6b8a;
+            margin-bottom: 16px;
+        }
+        .dash-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .dash-stat {
+            flex: 1;
+            min-width: 80px;
+        }
+        .dash-stat .number {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--pink-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dash-stat .label {
+            font-size: 13px;
+            color: #6b6b8a;
+            margin-top: 4px;
+        }
+        .orders-table {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            overflow-x: auto;
+        }
+        .orders-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 650px;
+        }
+        .orders-table th {
+            text-align: left;
+            padding: 12px 8px;
+            color: #6b6b8a;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.04);
+        }
+        .orders-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            vertical-align: middle;
+        }
+        .orders-table .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .orders-table .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .orders-table .status-badge.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .orders-table .proof-link {
+            color: var(--blue-primary);
+            text-decoration: none;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(74, 158, 255, 0.08);
+            font-size: 12px;
+            display: inline-block;
+        }
+        .orders-table .proof-link:hover {
+            background: rgba(74, 158, 255, 0.15);
+        }
+        .orders-table .btn-confirm {
+            padding: 4px 14px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #4a9eff, #7bb8ff);
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .orders-table .btn-confirm:hover {
+            transform: scale(1.05);
+        }
+        .orders-table .btn-wa {
+            padding: 4px 14px;
+            border: none;
+            border-radius: 50px;
+            background: #25D366;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .orders-table .btn-wa:hover {
+            transform: scale(1.05);
+        }
+        .btn-logout {
+            padding: 10px 24px;
+            border: 2px solid rgba(0, 0, 0, 0.06);
+            border-radius: 50px;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            color: #6b6b8a;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        .btn-add-product {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 50px;
+            background: var(--pink-gradient);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-add-product:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(255, 107, 138, 0.3);
+        }
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .admin-actions .btn-edit {
+            background: rgba(74, 158, 255, 0.08);
+            color: var(--blue-primary);
+        }
+        .admin-actions .btn-edit:hover {
+            background: rgba(74, 158, 255, 0.15);
+        }
+        .admin-actions .btn-delete {
+            background: rgba(239, 68, 68, 0.08);
+            color: #ef4444;
+        }
+        .admin-actions .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+        .btn-refresh {
+            padding: 6px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 50px;
+            background: transparent;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .input-group label .required {
+            color: #ef4444;
+        }
+        .input-group input,
+        .input-group select {
+            padding: 12px 16px;
+            border: 2px solid rgba(0, 0, 0, 0.06);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+            width: 100%;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--pink-primary);
+            box-shadow: 0 0 0 4px rgba(255, 107, 138, 0.1);
+        }
+        .btn-login,
+        .btn-order-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--pink-gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+        .btn-login:hover,
+        .btn-order-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(255, 107, 138, 0.3);
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .modal-box {
+            background: white;
+            border-radius: var(--radius-xl);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .modal-header h3 {
+            font-size: 20px;
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.04);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.08);
+            transform: rotate(90deg);
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .toast {
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.4s ease backwards;
+            min-width: 200px;
+        }
+        .toast.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .toast.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b6b8a;
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid var(--pink-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .gradient-text {
+            background: var(--pink-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .method-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .method-item .label {
+            color: #6b6b8a;
+        }
+        .method-item .value {
+            font-weight: 600;
+        }
+        .upload-area {
+            position: relative;
+            border: 2px dashed rgba(255, 107, 138, 0.25);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255, 107, 138, 0.03);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: var(--pink-primary);
+            background: rgba(255, 107, 138, 0.08);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+        }
+        .upload-icon {
+            font-size: 32px;
+        }
+        .upload-text {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .upload-preview {
+            position: relative;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .upload-preview img {
+            max-height: 150px;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        .btn-remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+        .btn-remove-image:hover {
+            background: #ef4444;
+            transform: scale(1.1);
+        }
+        .upload-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .upload-preview-grid .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        .upload-preview-grid .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .upload-preview-grid .preview-item .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 3;
+        }
         @media (max-width: 768px) {
-            .admin-page { padding: 16px; }
-            .dashboard-grid { grid-template-columns: 1fr; gap: 16px; }
-            .dash-card { padding: 16px; }
-            .admin-page .header { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .admin-page .header h1 { font-size: 22px; }
-            .orders-table { padding: 12px; font-size: 12px; }
-            .orders-table table { font-size: 12px; min-width: 500px; }
+            .admin-page {
+                padding: 16px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .dash-card {
+                padding: 16px;
+            }
+            .admin-page .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .admin-page .header h1 {
+                font-size: 22px;
+            }
+            .orders-table {
+                padding: 12px;
+                font-size: 12px;
+            }
+            .orders-table table {
+                font-size: 12px;
+                min-width: 500px;
+            }
         }
     </style>
 </head>
@@ -125,7 +625,6 @@
             </div>
 
             <div class="dashboard-grid">
-                <!-- Statistik -->
                 <div class="dash-card">
                     <h3>📊 Statistik</h3>
                     <div class="dash-stats">
@@ -143,8 +642,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Manajemen Produk + Metode Pembayaran -->
                 <div class="dash-card">
                     <h3>📦 Manajemen</h3>
                     <div class="admin-actions">
@@ -184,11 +681,10 @@
                     <div class="loading"><div class="spinner"></div><p>Memuat data...</p></div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- ====== MODAL: TAMBAH PRODUK ====== -->
+    <!-- ====== MODAL: TAMBAH PRODUK (DENGAN 3 FOTO) ====== -->
     <div id="addProductModal" class="modal-overlay" style="display:none;">
         <div class="modal-box modal-lg">
             <div class="modal-header">
@@ -202,6 +698,21 @@
                         <div class="input-group"><label>Harga <span class="required">*</span></label><input type="number" id="addProductPrice" placeholder="35000" required /></div>
                     </div>
                     <div class="input-group"><label>Stok <span class="required">*</span></label><input type="number" id="addProductStock" placeholder="10" required /></div>
+
+                    <!-- ====== UPLOAD 3 FOTO PRODUK ====== -->
+                    <div class="input-group">
+                        <label>📸 Foto Produk (maksimal 3 foto)</label>
+                        <div class="upload-area" id="productUploadArea">
+                            <input type="file" id="productImages" accept="image/*" multiple />
+                            <div class="upload-placeholder" id="productPlaceholder">
+                                <span class="upload-icon">🖼️</span>
+                                <span class="upload-text">Klik untuk upload foto produk</span>
+                                <span class="upload-hint">JPG, PNG, WEBP • Max 2MB per foto • Maks 3 foto</span>
+                            </div>
+                            <div class="upload-preview-grid" id="productPreviewGrid"></div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn-order-submit">✅ Tambah Produk</button>
                 </form>
             </div>
@@ -261,15 +772,15 @@
                 <form id="paymentForm">
                     <div class="input-group">
                         <label>📱 QRIS</label>
-                        <div class="upload-area" style="border:2px dashed rgba(255,107,138,0.25);border-radius:12px;padding:20px;text-align:center;cursor:pointer;position:relative;">
-                            <input type="file" id="qrisFile" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;" />
+                        <div class="upload-area">
+                            <input type="file" id="qrisFile" accept="image/*" />
                             <div class="upload-placeholder" id="qrisPlaceholder">
-                                <span style="font-size:32px;">📱</span>
-                                <span style="font-weight:600;font-size:14px;">Upload QRIS</span>
+                                <span class="upload-icon">📱</span>
+                                <span class="upload-text">Upload QRIS</span>
                             </div>
-                            <div class="upload-preview" id="qrisPreview" style="display:none;position:relative;">
-                                <img id="qrisPreviewImg" src="" alt="QRIS" style="max-height:150px;object-fit:contain;border-radius:12px;" />
-                                <button type="button" class="btn-remove-image" onclick="UI.removeQRIS()" style="position:absolute;top:8px;right:8px;width:32px;height:32px;border:none;border-radius:50%;background:rgba(239,68,68,0.9);color:white;font-size:16px;cursor:pointer;">✕</button>
+                            <div class="upload-preview" id="qrisPreview" style="display:none;">
+                                <img id="qrisPreviewImg" src="" alt="QRIS" />
+                                <button type="button" class="btn-remove-image" onclick="UI.removeQRIS()">✕</button>
                             </div>
                         </div>
                     </div>
@@ -291,20 +802,18 @@
         </div>
     </div>
 
-    <!-- ====== TOAST ====== -->
     <div id="toast-container"></div>
 
     <script>
         // ============================================
-        // 1. KONFIGURASI — API URL
+        // ⚠️ GANTI URL INI DENGAN URL APPS SCRIPT KAMU ⚠️
         // ============================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxeMVgLeClgVhI3G4FNWNvGCDPUoB9djN9Av4Mk--8ACqNxuiShfopupMmUmki7N5i2/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzAo84d2xYrrBCUW2DCvhj2yuIqjmgHpBRTsIY8PTWtemamM3AvS51VXdeXT_4wn2w5TQ/exec';
 
         // ============================================
-        // 2. TOAST
-        // ============================================
+
         const Toast = {
-            show: (msg, type = 'info', duration = 3000) => {
+            show: (msg, type = 'info', duration = 4000) => {
                 const c = document.getElementById('toast-container');
                 if (!c) return;
                 const t = document.createElement('div');
@@ -322,9 +831,6 @@
             info: (m) => Toast.show(m, 'info')
         };
 
-        // ============================================
-        // 3. AUTH
-        // ============================================
         const Auth = {
             login: (u, p) => {
                 if (u === 'admin' && p === 'fistit123') {
@@ -340,114 +846,135 @@
             isAdmin: () => sessionStorage.getItem('fistit_admin') === 'true'
         };
 
-        // ============================================
-        // 4. API CALLS
-        // ============================================
         const API = {
             getProducts: async () => {
-                const res = await fetch(`${API_URL}?action=products`);
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return data.data || [];
+                try {
+                    const res = await fetch(`${API_URL}?action=products`);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return data.data || [];
+                } catch (error) {
+                    console.error('❌ API getProducts error:', error);
+                    throw error;
+                }
             },
             getOrders: async () => {
-                const res = await fetch(`${API_URL}?action=orders`);
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return data.data || [];
+                try {
+                    const res = await fetch(`${API_URL}?action=orders`);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return data.data || [];
+                } catch (error) {
+                    console.error('❌ API getOrders error:', error);
+                    throw error;
+                }
             },
             addProduct: async (product) => {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addProduct', ...product })
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return data.data;
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addProduct', ...product })
+                    });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return data.data;
+                } catch (error) {
+                    console.error('❌ API addProduct error:', error);
+                    throw error;
+                }
             },
             updateProduct: async (product) => {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'updateProduct', ...product })
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return data.data;
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'updateProduct', ...product })
+                    });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return data.data;
+                } catch (error) {
+                    console.error('❌ API updateProduct error:', error);
+                    throw error;
+                }
             },
             deleteProduct: async (id) => {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'deleteProduct', id })
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return true;
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'deleteProduct', id })
+                    });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return true;
+                } catch (error) {
+                    console.error('❌ API deleteProduct error:', error);
+                    throw error;
+                }
             },
             confirmOrder: async (orderId) => {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'confirmOrder', orderId })
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.success) throw new Error(data.error);
-                return data.data;
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'confirmOrder', orderId })
+                    });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error);
+                    return data.data;
+                } catch (error) {
+                    console.error('❌ API confirmOrder error:', error);
+                    throw error;
+                }
             }
         };
 
-        // ============================================
-        // 5. WHATSAPP
-        // ============================================
         const WhatsApp = {
             sendConfirmationToBuyer: (order) => {
                 const msg = `
-    ✅ PESANAN DIKONFIRMASI — FIST IT
+        ✅ PESANAN DIKONFIRMASI — FIST IT
 
-    Halo ${order.userName}! 👋
+        Halo ${order.userName}! 👋
 
-    Pesanan Anda telah dikonfirmasi:
+        Pesanan Anda telah dikonfirmasi:
 
-    🆔 Order ID: ${order.id}
-    🎮 User ID: ${order.userId}
-    🛍️ Produk: ${order.productName}
-    💰 Total: Rp ${(parseInt(order.totalPayment) || 0).toLocaleString()}
+        🆔 Order ID: ${order.id}
+        🎮 User ID: ${order.userId}
+        🛍️ Produk: ${order.productName}
+        💰 Total: Rp ${(parseInt(order.totalPayment) || 0).toLocaleString()}
 
-    ---
-    Item akan dikirim segera ke akun Roblox Anda.
-    Terima kasih telah berbelanja di FIST IT STORE! ⚡
-                `.trim();
+        ---
+        Item akan dikirim segera.
+        Terima kasih telah berbelanja di FIST IT STORE! ⚡
+                    `.trim();
                 return `https://wa.me/${order.userPhone}?text=${encodeURIComponent(msg)}`;
             },
             sendConfirmationToAdmin: (order, adminPhone = '6281234567890') => {
                 const msg = `
-    ✅ PESANAN DIKONFIRMASI — ADMIN
+        ✅ PESANAN DIKONFIRMASI — ADMIN
 
-    Order ID: ${order.id}
-    Produk: ${order.productName}
-    Pembeli: ${order.userName} (${order.userPhone})
-    User ID: ${order.userId}
-    Total: Rp ${(parseInt(order.totalPayment) || 0).toLocaleString()}
+        Order ID: ${order.id}
+        Produk: ${order.productName}
+        Pembeli: ${order.userName} (${order.userPhone})
+        User ID: ${order.userId}
+        Total: Rp ${(parseInt(order.totalPayment) || 0).toLocaleString()}
 
-    Status: ✅ Dikonfirmasi
-    ---
-    Pesan konfirmasi sudah dikirim ke pembeli.
-                `.trim();
+        Status: ✅ Dikonfirmasi
+        ---
+        Pesan konfirmasi sudah dikirim ke pembeli.
+                    `.trim();
                 return `https://wa.me/${adminPhone}?text=${encodeURIComponent(msg)}`;
             }
         };
 
-        // ============================================
-        // 6. PAYMENT (LocalStorage)
-        // ============================================
         const Payment = {
             get: () => JSON.parse(localStorage.getItem('fistit_payment') || '{"qris":null,"dana":"","bca":"","mandiri":"","gopay":"","name":"FIST IT STORE"}'),
             save: (data) => {
@@ -456,19 +983,13 @@
             }
         };
 
-        // ============================================
-        // 7. UI CONTROLLER
-        // ============================================
         const UI = {
             _products: [],
             _orders: [],
-            _pendingImage: null,
 
-            // ---- MODAL ----
             openModal: (id) => { document.getElementById(id).style.display = 'flex'; },
             closeModal: (id) => { document.getElementById(id).style.display = 'none'; },
 
-            // ---- LOAD DATA ----
             loadData: async () => {
                 try {
                     const [products, orders] = await Promise.all([
@@ -479,7 +1000,7 @@
                     UI._orders = orders;
                     return true;
                 } catch (error) {
-                    console.error('Load data error:', error);
+                    console.error('❌ Load data error:', error);
                     Toast.error('Gagal memuat data: ' + error.message);
                     return false;
                 }
@@ -496,7 +1017,6 @@
                 }
             },
 
-            // ---- RENDER ORDERS ----
             renderOrders: () => {
                 const container = document.getElementById('ordersList');
                 if (!container) return;
@@ -508,53 +1028,62 @@
                 }
 
                 let html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Produk</th>
-                                <th>Pembeli</th>
-                                <th>No HP</th>
-                                <th>User ID</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Produk</th>
+                                    <th>Pembeli</th>
+                                    <th>No HP</th>
+                                    <th>User ID</th>
+                                    <th>Total</th>
+                                    <th>Bukti</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        `;
 
                 orders.reverse().forEach(o => {
+                    let proofHtml = 'Tidak ada';
+                    if (o.imageId) {
+                        const img = localStorage.getItem('fistit_image_' + o.imageId);
+                        if (img) {
+                            proofHtml = `<a href="${img}" target="_blank" class="proof-link">📸 Lihat Bukti</a>`;
+                        }
+                    }
+
                     const waLink = `https://wa.me/${o.userPhone}?text=Halo%20${encodeURIComponent(o.userName)}%2C%20pesanan%20anda%20#${o.id}%20sedang%20diproses.`;
 
                     html += `
-                        <tr>
-                            <td><strong>#${o.id}</strong></td>
-                            <td>${o.productName}</td>
-                            <td><strong>${o.userName}</strong></td>
-                            <td>${o.userPhone}</td>
-                            <td>${o.userId}</td>
-                            <td>Rp ${(parseInt(o.totalPayment) || 0).toLocaleString()}</td>
-                            <td>
-                                <span class="status-badge ${o.status === 'Dikonfirmasi' ? 'confirmed' : 'pending'}">
-                                    ${o.status}
-                                </span>
-                            </td>
-                            <td>
-                                ${o.status === 'Menunggu Konfirmasi' ? `
-                                    <button class="btn-confirm" onclick="UI.adminConfirmOrder('${o.id}')">✅ Konfirmasi</button>
-                                    <a href="${waLink}" target="_blank" class="btn-wa">💬 WA</a>
-                                ` : '✅ Selesai'}
-                            </td>
-                        </tr>
-                    `;
+                            <tr>
+                                <td><strong>#${o.id}</strong></td>
+                                <td>${o.productName}</td>
+                                <td><strong>${o.userName}</strong></td>
+                                <td>${o.userPhone}</td>
+                                <td>${o.userId}</td>
+                                <td>Rp ${(parseInt(o.totalPayment) || 0).toLocaleString()}</td>
+                                <td>${proofHtml}</td>
+                                <td>
+                                    <span class="status-badge ${o.status === 'Dikonfirmasi' ? 'confirmed' : 'pending'}">
+                                        ${o.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    ${o.status === 'Menunggu Konfirmasi' ? `
+                                            <button class="btn-confirm" onclick="UI.adminConfirmOrder('${o.id}')">✅ Konfirmasi</button>
+                                            <a href="${waLink}" target="_blank" class="btn-wa">💬 WA</a>
+                                        ` : '✅ Selesai'}
+                                </td>
+                            </tr>
+                        `;
                 });
 
                 html += `</tbody></table>`;
                 container.innerHTML = html;
             },
 
-            // ---- CONFIRM ORDER ----
             adminConfirmOrder: async (orderId) => {
                 try {
                     const order = await API.confirmOrder(orderId);
@@ -571,7 +1100,6 @@
                 }
             },
 
-            // ---- UPDATE STATS ----
             updateStats: () => {
                 const products = UI._products || [];
                 const orders = UI._orders || [];
@@ -592,7 +1120,6 @@
                 if (els.dashTotalProducts) els.dashTotalProducts.textContent = products.length;
             },
 
-            // ---- RENDER PAYMENT METHODS ----
             renderPaymentMethods: () => {
                 const p = Payment.get();
                 const display = {
@@ -616,12 +1143,10 @@
                 }
             },
 
-            // ---- LOGOUT ----
             logout: () => {
                 Auth.logout();
             },
 
-            // ---- LOGIN ----
             handleLogin: (e) => {
                 e.preventDefault();
                 const u = document.getElementById('adminUsername').value;
@@ -636,12 +1161,55 @@
                 }
             },
 
-            // ============================================
-            // TAMBAH PRODUK
-            // ============================================
+            // ---- TAMBAH PRODUK DENGAN 3 FOTO ----
             showAddProductModal: () => {
                 document.getElementById('addProductForm').reset();
+                document.getElementById('productPreviewGrid').innerHTML = '';
+                document.getElementById('productPlaceholder').style.display = 'flex';
+                UI._pendingProductImages = [];
                 UI.openModal('addProductModal');
+            },
+
+            handleProductImages: (e) => {
+                const files = e.target.files;
+                const grid = document.getElementById('productPreviewGrid');
+                grid.innerHTML = '';
+
+                if (files.length > 3) {
+                    Toast.error('Maksimal 3 foto!');
+                    e.target.value = '';
+                    return;
+                }
+
+                UI._pendingProductImages = files;
+
+                Array.from(files).forEach((file, idx) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const div = document.createElement('div');
+                        div.className = 'preview-item';
+                        div.innerHTML = `
+                            <img src="${ev.target.result}" alt="Preview ${idx + 1}" />
+                            <button type="button" class="remove-img" onclick="UI.removeProductImage(${idx})">✕</button>
+                        `;
+                        grid.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                if (files.length > 0) {
+                    document.getElementById('productPlaceholder').style.display = 'none';
+                }
+            },
+
+            removeProductImage: (index) => {
+                const files = Array.from(UI._pendingProductImages || []);
+                files.splice(index, 1);
+                const dt = new DataTransfer();
+                files.forEach(f => dt.items.add(f));
+                document.getElementById('productImages').files = dt.files;
+                UI._pendingProductImages = dt.files;
+                UI.handleProductImages({ target: { files: dt.files } });
             },
 
             handleAddProduct: async (e) => {
@@ -654,8 +1222,22 @@
                 if (isNaN(price) || price <= 0) { Toast.error('Harga tidak valid'); return; }
                 if (isNaN(stock) || stock < 0) { Toast.error('Stok tidak valid'); return; }
 
+                // Upload 3 foto produk
+                const files = UI._pendingProductImages || [];
+                let imageData = [];
+                for (const file of files) {
+                    const base64 = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    imageData.push(base64);
+                }
+
+                const imagesJson = imageData.length > 0 ? JSON.stringify(imageData) : '';
+
                 try {
-                    await API.addProduct({ name, price, stock, images: '' });
+                    await API.addProduct({ name, price, stock, images: imagesJson });
                     UI.closeModal('addProductModal');
                     Toast.success(`✅ "${name}" berhasil ditambahkan!`);
                     await UI.loadAndRender();
@@ -664,9 +1246,7 @@
                 }
             },
 
-            // ============================================
-            // EDIT PRODUK
-            // ============================================
+            // ---- EDIT PRODUK ----
             showEditProductModal: () => {
                 const products = UI._products || [];
                 const select = document.getElementById('editProductSelect');
@@ -697,7 +1277,7 @@
                 if (isNaN(stock) || stock < 0) { Toast.error('Stok tidak valid'); return; }
 
                 try {
-                    await API.updateProduct({ id, name, price, stock, images: '' });
+                    await API.updateProduct({ id, name, price, stock });
                     UI.closeModal('editProductModal');
                     Toast.success(`✅ "${name}" berhasil diupdate!`);
                     await UI.loadAndRender();
@@ -706,9 +1286,7 @@
                 }
             },
 
-            // ============================================
-            // HAPUS PRODUK
-            // ============================================
+            // ---- HAPUS PRODUK ----
             showDeleteProductModal: () => {
                 const products = UI._products || [];
                 const select = document.getElementById('deleteProductSelect');
@@ -732,9 +1310,7 @@
                 }
             },
 
-            // ============================================
-            // METODE PEMBAYARAN
-            // ============================================
+            // ---- METODE PEMBAYARAN ----
             showPaymentModal: () => {
                 const p = Payment.get();
                 document.getElementById('paymentDana').value = p.dana || '';
@@ -810,11 +1386,11 @@
             }
 
             document.getElementById('loginForm').addEventListener('submit', UI.handleLogin);
-
             document.getElementById('addProductForm').addEventListener('submit', UI.handleAddProduct);
             document.getElementById('editProductForm').addEventListener('submit', UI.handleEditProduct);
             document.getElementById('paymentForm').addEventListener('submit', UI.handlePaymentSubmit);
             document.getElementById('qrisFile').addEventListener('change', UI.handleQRISUpload);
+            document.getElementById('productImages').addEventListener('change', UI.handleProductImages);
 
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', (e) => {
@@ -823,8 +1399,8 @@
             });
 
             console.log('🔐 FIST IT STORE — Admin Panel');
-            console.log('📊 Data tersimpan di Google Sheets');
-            console.log('💳 Metode pembayaran bisa diatur admin');
+            console.log('📡 API_URL:', API_URL);
+            console.log('📸 Upload 3 foto produk didukung!');
         });
     </script>
 
